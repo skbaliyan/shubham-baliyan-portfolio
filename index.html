@@ -1,48 +1,7 @@
-
-<!-- saved from url=(0052)file:///C:/Users/ShubhamBaliyan/Downloads/index.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script>
-
-
-    
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shubham Baliyan - Portfolio</title>
     <style>
@@ -50,62 +9,97 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
         }
 
         body {
             line-height: 1.6;
-            color: #333;
-        }
-
-        header {
-            background: #2c3e50;
-            color: white;
-            text-align: center;
-            padding: 2rem;
-        }
-
-        nav {
-            background: #34495e;
-            padding: 1rem;
-        }
-
-        nav ul {
-            list-style: none;
+            color: #e0e0e0;
+            background: #1a252f;
             display: flex;
-            justify-content: center;
-            gap: 2rem;
+            min-height: 100vh;
         }
 
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: #e0e0e0;
+            position: fixed;
+            height: 100%;
+            padding: 2rem 1rem;
+            transition: background 0.3s;
         }
 
-        nav a:hover {
-            color: #3498db;
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            color: #fff;
         }
 
-        section {
-            padding: 3rem 2rem;
-            max-width: 1000px;
-            margin: 0 auto;
+        .sidebar ul {
+            list-style: none;
         }
 
-        h2 {
+        .sidebar ul li {
             margin-bottom: 1.5rem;
-            color: #2c3e50;
         }
 
-        .about, .contact {
-            background: #f9f9f9;
+        .sidebar ul li a {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
         }
 
-        .about-content {
+        .sidebar ul li a:hover {
+            color: #e74c3c;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 2rem;
+            width: calc(100% - 250px);
+        }
+
+        .header {
+            text-align: center;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #e74c3c;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #fff;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #b0bec5;
+        }
+
+        .card {
+            background: #2d3b4e;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #e74c3c;
+            margin-bottom: 1rem;
+        }
+
+        .about .profile {
             display: flex;
             align-items: center;
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
         .about img {
@@ -113,7 +107,7 @@
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #3498db;
+            border: 3px solid #e74c3c;
         }
 
         .skills ul, .certifications ul {
@@ -124,24 +118,30 @@
         }
 
         .skills li, .certifications li {
-            background: #3498db;
+            background: #e74c3c;
             color: white;
             padding: 0.5rem 1rem;
             border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .skills li:hover, .certifications li:hover {
+            background: #c0392b;
         }
 
         .experience-item {
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .experience-item h3 {
-            color: #2c3e50;
+            color: #fff;
         }
 
         .experience-item ul {
             list-style-type: disc;
             margin-left: 1.5rem;
             margin-top: 0.5rem;
+            color: #b0bec5;
         }
 
         .education-item {
@@ -150,29 +150,37 @@
 
         .contact p {
             margin-bottom: 1rem;
+            color: #b0bec5;
         }
 
-        footer {
-            background: #2c3e50;
-            color: white;
-            text-align: center;
-            padding: 1rem;
-            position: relative;
-            bottom: 0;
-            width: 100%;
+        .contact a {
+            color: #e74c3c;
+            text-decoration: none;
         }
 
-        @media (max-width: 600px) {
-            nav ul {
-                flex-direction: column;
-                gap: 1rem;
+        .contact a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 1rem;
             }
 
-            section {
-                padding: 2rem 1rem;
+            .content {
+                margin-left: 0;
+                width: 100%;
             }
 
-            .about-content {
+            .sidebar ul {
+                display: flex;
+                justify-content: space-around;
+            }
+
+            .about .profile {
                 flex-direction: column;
                 text-align: center;
             }
@@ -185,132 +193,132 @@
     </style>
 </head>
 <body>
-    <header>
-        <h1>Shubham Baliyan</h1>
-        <p>Lead Technical Recruiter – BFSI | Data Science &amp; AI/ML | Reston, Virginia</p>
-    </header>
-
-    <nav>
+    <div class="sidebar">
+        <h2>Menu</h2>
         <ul>
-            <li><a href="file:///C:/Users/ShubhamBaliyan/Downloads/index.html#about">About</a></li>
-            <li><a href="file:///C:/Users/ShubhamBaliyan/Downloads/index.html#skills">Skills</a></li>
-            <li><a href="file:///C:/Users/ShubhamBaliyan/Downloads/index.html#experience">Experience</a></li>
-            <li><a href="file:///C:/Users/ShubhamBaliyan/Downloads/index.html#certifications">Certifications</a></li>
-            <li><a href="file:///C:/Users/ShubhamBaliyan/Downloads/index.html#education">Education</a></li>
-            <li><a href="file:///C:/Users/ShubhamBaliyan/Downloads/index.html#contact">Contact</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#certifications">Certifications</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#contact">Contact</a></li>
         </ul>
-    </nav>
+    </div>
 
-    <section id="about" class="about">
-        <h2>About Me</h2>
-        <div class="about-content">
-            <img src="https://esolutions.keka.com/files/5b2a91f7-95c6-4c73-8406-47375e715b2a/200x200/profileimage/59ecb062e8b14ce2a3a4e3a252c46f07">
-            <p>I'm Shubham Baliyan, a results-driven Lead Technical Recruiter with over 5 years of experience based in Reston, Virginia, specializing in BFSI and Data Science &amp; AI/ML domains. I excel in sourcing and placing top-tier IT professionals, managing the full recruitment lifecycle, and ensuring compliance. With a network of over 6,000 followers and 500+ connections on LinkedIn, I leverage advanced sourcing techniques, client relationship management, and team leadership to deliver exceptional candidate experiences.</p>
+    <div class="content">
+        <div class="header">
+            <h1>Shubham Baliyan</h1>
+            <p>Lead Technical Recruiter – BFSI | Data Science & AI/ML | Reston, Virginia</p>
         </div>
-    </section>
 
-    <section id="skills" class="skills">
-        <h2>Skills</h2>
-        <ul>
-            <li>Office 365</li>
-            <li>W2 Hiring &amp; Compliance</li>
-            <li>Interviewing &amp; Candidate Assessment</li>
-            <li>Boolean Search</li>
-            <li>Applicant Tracking Systems (JobDiva, Ceipal)</li>
-            <li>LinkedIn Recruiter</li>
-            <li>Dice &amp; Monster Sourcing</li>
-            <li>Offer Negotiation</li>
-            <li>Client Relationship Management</li>
-        </ul>
-    </section>
+        <div id="about" class="card about">
+            <h2>About Me</h2>
+            <div class="profile">
+                <img src="https://raw.githubusercontent.com/skbaliyan/shubham-baliyan-portfolio/main/59ecb062e8b14ce2a3a4e3a252c46f07.jpg" alt="Shubham Baliyan Profile Picture">
+                <p>I'm Shubham Baliyan, a results-driven Lead Technical Recruiter with over 5 years of experience based in Reston, Virginia, specializing in BFSI and Data Science & AI/ML domains. I excel in sourcing and placing top-tier IT professionals, managing the full recruitment lifecycle, and ensuring compliance. With a network of over 6,000 followers and 500+ connections on LinkedIn, I leverage advanced sourcing techniques, client relationship management, and team leadership to deliver exceptional candidate experiences.</p>
+            </div>
+        </div>
 
-    <section id="experience" class="experience">
-        <h2>Experience</h2>
-        <div class="experience-item">
-            <h3>Lead Technical Recruiter – BFSI | Data Science &amp; AI/ML, EsolutionsFirst</h3>
-            <p>January 2025 - Present, Reston, VA</p>
+        <div id="skills" class="card skills">
+            <h2>Skills</h2>
             <ul>
-                <li>Spearheaded end-to-end recruitment for Contract (W2/C2C) and Full-Time (FTE) roles across technologies including Data Science, Machine Learning, Cloud, DevOps, Java, .NET, Salesforce, and Cybersecurity.</li>
-                <li>Collaborated directly with client hiring managers and delivery teams to understand technical requirements and deliver top-tier talent in line with project timelines and compliance standards.</li>
-                <li>Successfully placed Data Scientists, Data Engineers, ML Engineers, and AI Specialists with expertise in Python, R, SQL, NLP, TensorFlow, PyTorch, and cloud platforms (AWS, GCP, Azure).</li>
-                <li>Utilized JobDiva as the sole Applicant Tracking System (ATS) to manage candidate lifecycle, maintain records, and streamline submittals to direct clients.</li>
-                <li>Leveraged advanced sourcing techniques including Boolean search, LinkedIn Recruiter, Dice, Monster, and internal databases to attract and engage passive candidates.</li>
-                <li>Negotiated hourly rates (W2/C2C) and annual compensation packages (FTE), aligning candidate expectations with client budgets and onboarding processes.</li>
-                <li>Ensured 100% compliance with client documentation including E-Verify, I-9, NDAs, and background checks.</li>
-                <li>Delivered high-quality submittals with exceptional interview-to-offer ratios for critical roles at: Freddie Mac (Data Engineering, AWS DevOps, Java Full Stack, Cloud Architects), KPMG (Salesforce Consultants, Workday/ERP Professionals, Data Scientists), CGI (Fannie Mae) (Business Analysts, Data Analysts, AI/ML Engineers).</li>
-                <li>Trained and led a team of junior recruiters, providing guidance on sourcing strategies, submission quality, and client communication.</li>
+                <li>Office 365</li>
+                <li>W2 Hiring & Compliance</li>
+                <li>Interviewing & Candidate Assessment</li>
+                <li>Boolean Search</li>
+                <li>Applicant Tracking Systems (JobDiva, Ceipal)</li>
+                <li>LinkedIn Recruiter</li>
+                <li>Dice & Monster Sourcing</li>
+                <li>Offer Negotiation</li>
+                <li>Client Relationship Management</li>
             </ul>
         </div>
-        <div class="experience-item">
-            <h3>Senior US IT Recruiter, GoodDolphin Technologies</h3>
-            <p>February 2022 - January 2025, Milpitas, CA</p>
+
+        <div id="experience" class="card experience">
+            <h2>Experience</h2>
+            <div class="experience-item">
+                <h3>Lead Technical Recruiter – BFSI | Data Science & AI/ML, EsolutionsFirst</h3>
+                <p>January 2025 - Present, Reston, VA</p>
+                <ul>
+                    <li>Spearheaded end-to-end recruitment for Contract (W2/C2C) and Full-Time (FTE) roles across technologies including Data Science, Machine Learning, Cloud, DevOps, Java, .NET, Salesforce, and Cybersecurity.</li>
+                    <li>Collaborated directly with client hiring managers and delivery teams to understand technical requirements and deliver top-tier talent in line with project timelines and compliance standards.</li>
+                    <li>Successfully placed Data Scientists, Data Engineers, ML Engineers, and AI Specialists with expertise in Python, R, SQL, NLP, TensorFlow, PyTorch, and cloud platforms (AWS, GCP, Azure).</li>
+                    <li>Utilized JobDiva as the sole Applicant Tracking System (ATS) to manage candidate lifecycle, maintain records, and streamline submittals to direct clients.</li>
+                    <li>Leveraged advanced sourcing techniques including Boolean search, LinkedIn Recruiter, Dice, Monster, and internal databases to attract and engage passive candidates.</li>
+                    <li>Negotiated hourly rates (W2/C2C) and annual compensation packages (FTE), aligning candidate expectations with client budgets and onboarding processes.</li>
+                    <li>Ensured 100% compliance with client documentation including E-Verify, I-9, NDAs, and background checks.</li>
+                    <li>Delivered high-quality submittals with exceptional interview-to-offer ratios for critical roles at: Freddie Mac (Data Engineering, AWS DevOps, Java Full Stack, Cloud Architects), KPMG (Salesforce Consultants, Workday/ERP Professionals, Data Scientists), CGI (Fannie Mae) (Business Analysts, Data Analysts, AI/ML Engineers).</li>
+                    <li>Trained and led a team of junior recruiters, providing guidance on sourcing strategies, submission quality, and client communication.</li>
+                </ul>
+            </div>
+            <div class="experience-item">
+                <h3>Senior US IT Recruiter, GoodDolphin Technologies</h3>
+                <p>February 2022 - January 2025, Milpitas, CA</p>
+                <ul>
+                    <li>Placed Data Scientists, Data Engineers, ML Engineers, and AI Specialists with expertise in Python, R, SQL, NLP, TensorFlow, PyTorch, and cloud platforms (AWS, GCP, Azure).</li>
+                    <li>Managed candidate lifecycle using JobDiva ATS, ensuring streamlined submittals to clients like Yahoo, Verizon, Salesforce, and KPMG.</li>
+                    <li>Leveraged Boolean search, LinkedIn Recruiter, Dice, and Monster to source passive candidates.</li>
+                    <li>Negotiated W2/C2C rates and FTE compensation, aligning with client budgets.</li>
+                    <li>Ensured 100% compliance with E-Verify, I-9, NDAs, and background checks.</li>
+                    <li>Trained junior recruiters on sourcing strategies and client communication.</li>
+                </ul>
+            </div>
+            <div class="experience-item">
+                <h3>US IT Recruiter, Synchrotech Solutions Inc.</h3>
+                <p>October 2020 - August 2021, Wendell, NC</p>
+                <ul>
+                    <li>Collaborated with clients like Mphasis, Hexaware, and JPMC to fulfill IT staffing needs.</li>
+                    <li>Sourced candidates for Java Developers, DevOps Engineers, and Cloud Architects using Dice, Monster, and LinkedIn.</li>
+                    <li>Managed full recruitment lifecycle, including technical screening and offer negotiation.</li>
+                    <li>Ensured compliance with EEO and visa requirements for public sector clients.</li>
+                </ul>
+            </div>
+            <div class="experience-item">
+                <h3>US IT Recruiter, OKAYA INFOCOM</h3>
+                <p>July 2019 - September 2020, Ronkonkoma, NY</p>
+                <ul>
+                    <li>Partnered with clients like Virtusa, Cognizant, and TCS to source mid-to-senior level IT professionals.</li>
+                    <li>Specialized in Java, .NET, DevOps, and Salesforce roles using Dice, Monster, and Ceipal ATS.</li>
+                    <li>Coordinated interviews and negotiated offers, adhering to client-specific compliance protocols.</li>
+                    <li>Maintained candidate pipelines and provided real-time updates via ATS/CRM tools.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="certifications" class="card certifications">
+            <h2>Certifications</h2>
             <ul>
-                <li>Placed Data Scientists, Data Engineers, ML Engineers, and AI Specialists with expertise in Python, R, SQL, NLP, TensorFlow, PyTorch, and cloud platforms (AWS, GCP, Azure).</li>
-                <li>Managed candidate lifecycle using JobDiva ATS, ensuring streamlined submittals to clients like Yahoo, Verizon, Salesforce, and KPMG.</li>
-                <li>Leveraged Boolean search, LinkedIn Recruiter, Dice, and Monster to source passive candidates.</li>
-                <li>Negotiated W2/C2C rates and FTE compensation, aligning with client budgets.</li>
-                <li>Ensured 100% compliance with E-Verify, I-9, NDAs, and background checks.</li>
-                <li>Trained junior recruiters on sourcing strategies and client communication.</li>
+                <li>Headhunter Lean Six Sigma</li>
+                <li>Certified in Recruitment</li>
+                <li>Human Capital Management</li>
+                <li>ChatGPT for Marketing</li>
             </ul>
         </div>
-        <div class="experience-item">
-            <h3>US IT Recruiter, Synchrotech Solutions Inc.</h3>
-            <p>October 2020 - August 2021, Wendell, NC</p>
-            <ul>
-                <li>Collaborated with clients like Mphasis, Hexaware, and JPMC to fulfill IT staffing needs.</li>
-                <li>Sourced candidates for Java Developers, DevOps Engineers, and Cloud Architects using Dice, Monster, and LinkedIn.</li>
-                <li>Managed full recruitment lifecycle, including technical screening and offer negotiation.</li>
-                <li>Ensured compliance with EEO and visa requirements for public sector clients.</li>
-            </ul>
-        </div>
-        <div class="experience-item">
-            <h3>US IT Recruiter, OKAYA INFOCOM</h3>
-            <p>July 2019 - September 2020, Ronkonkoma, NY</p>
-            <ul>
-                <li>Partnered with clients like Virtusa, Cognizant, and TCS to source mid-to-senior level IT professionals.</li>
-                <li>Specialized in Java, .NET, DevOps, and Salesforce roles using Dice, Monster, and Ceipal ATS.</li>
-                <li>Coordinated interviews and negotiated offers, adhering to client-specific compliance protocols.</li>
-                <li>Maintained candidate pipelines and provided real-time updates via ATS/CRM tools.</li>
-            </ul>
-        </div>
-    </section>
 
-    <section id="certifications" class="certifications">
-        <h2>Certifications</h2>
-        <ul>
-            <li>Headhunter Lean Six Sigma</li>
-            <li>Certified in Recruitment</li>
-            <li>Human Capital Management</li>
-            <li>ChatGPT for Marketing</li>
-        </ul>
-    </section>
-
-    <section id="education" class="education">
-        <h2>Education</h2>
-        <div class="education-item">
-            <h3>Bachelor of Technology, Computer Science</h3>
-            <p>Uttarakhand Technical University, April 2015 - March 2019</p>
+        <div id="education" class="card education">
+            <h2>Education</h2>
+            <div class="education-item">
+                <h3>Bachelor of Technology, Computer Science</h3>
+                <p>Uttarakhand Technical University, April 2015 - March 2019</p>
+            </div>
+            <div class="education-item">
+                <h3>Mathematics and Computer Science</h3>
+                <p>Seventh Day Adventist Higher Secondary School, March 2014</p>
+            </div>
         </div>
-        <div class="education-item">
-            <h3>Mathematics and Computer Science</h3>
-            <p>Seventh Day Adventist Higher Secondary School, March 2014</p>
+
+        <div id="contact" class="card contact">
+            <h2>Contact</h2>
+            <p>Email: baliyansubhham100@gmail.com</p>
+            <p>LinkedIn: <a href="https://www.linkedin.com/in/shubhambaliyan-b97774149" target="_blank">linkedin.com/in/shubhambaliyan-b97774149</a></p>
+            <p>Portfolio: <a href="https://skbaliyan.github.io/shubham-baliyan-portfolio/" target="_blank">https://skbaliyan.github.io/shubham-baliyan-portfolio/</a></p>
+            <p>Location: Reston, Virginia, United States</p>
         </div>
-    </section>
-
-    <section id="contact" class="contact">
-        <h2>Contact</h2>
-        <p>Email: baliyansubhham100@gmail.com</p>
-        <p>LinkedIn: <a href="https://www.linkedin.com/in/shubhambaliyan-b97774149" target="_blank">linkedin.com/in/shubhambaliyan-b97774149</a></p>
-        <p>Location: Reston, Virginia, United States</p>
-    </section>
-
-    <footer>
-        <p>© 2025 Shubham Baliyan. All rights reserved.</p>
-    </footer>
+    </div>
 
     <script>
         // Smooth scrolling for navigation links
-        document.querySelectorAll('nav a').forEach(anchor => {
+        document.querySelectorAll('.sidebar a').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const sectionId = this.getAttribute('href').substring(1);
@@ -318,5 +326,5 @@
             });
         });
     </script>
-
-</body></html>
+</body>
+</html>
