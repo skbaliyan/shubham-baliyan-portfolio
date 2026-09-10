@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="#000000"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <g font-family="Georgia, 'Times New Roman', serif" font-weight="300">
+    <text x="80" y="230" font-size="118" fill="#FFFFFF" letter-spacing="-6">BUILD</text>
+    <text x="80" y="348" font-size="118" fill="#DFFF00" letter-spacing="-6">THE FUTURE</text>
+    <text x="80" y="466" font-size="118" fill="none" stroke="#FFFFFF" stroke-opacity="0.4" stroke-width="1.5" letter-spacing="-6">OF RECRUITING</text>
+  </g>
+
+  <g font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="600" letter-spacing="5">
+    <text x="80" y="120" fill="#DFFF00">001 / SHUBHAM BALIYAN</text>
+    <text x="80" y="552" fill="#FFFFFF" fill-opacity="0.5">LEAD TECHNICAL RECRUITER</text>
+    <text x="80" y="584" fill="#FFFFFF" fill-opacity="0.5">AI BUILDER &#183; PROMPT ENGINEER</text>
+  </g>
+
+  <rect x="0" y="620" width="1200" height="10" fill="#DFFF00"/>
+</svg>

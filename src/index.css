@@ -1,0 +1,244 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   PHASE 2 — GLOBAL LAYOUT
+   Background grid, grain, type defaults, focus, reduced motion.
+   ============================================================ */
+
+@layer base {
+  :root {
+    --void: #000000;
+    --paper: #ffffff;
+    --acid: #dfff00;
+    --grid-cell: 40px;
+    --grid-stroke: rgba(255, 255, 255, 0.05); /* 1px strokes @ 5% */
+    --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * {
+    -webkit-tap-highlight-color: rgba(223, 255, 0, 0.2);
+  }
+
+  /* Sideways scroll is clipped, not hidden.
+     `overflow-x: hidden` forces the other axis to `auto`, which turns the
+     element into a scroll container and silently breaks every descendant
+     `position: sticky`. `clip` prevents the scroll without doing that. */
+  html {
+    background: var(--void);
+    overflow-x: clip;
+  }
+
+  body {
+    @apply bg-void font-ui text-paper antialiased;
+    overflow-x: clip;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Browsers without `overflow: clip` fall back to the old behaviour on the
+     root only, where it costs the least. */
+  @supports not (overflow: clip) {
+    html { overflow-x: hidden; }
+    body { overflow-x: hidden; }
+  }
+
+  /* Optical sizing so Fraunces sets like display type, not body serif.
+     The spec's -0.08em tracking also eats the space character, so word-spacing
+     buys it back — letterforms stay tight, words stay separate. */
+  .font-display {
+    font-variation-settings: 'opsz' 144, 'SOFT' 0, 'WONK' 0;
+    word-spacing: 0.16em;
+  }
+
+  ::selection {
+    background: var(--acid);
+    color: var(--void);
+  }
+
+  /* Visible, unmistakable focus — acid on void passes contrast easily. */
+  :focus-visible {
+    outline: 2px solid var(--acid);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+  }
+
+  /* Preformatted text scrolls inside its own box; it never widens the page. */
+  pre {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  /* Fixed nav + sticky status bar sit above the flow; anchored targets
+     must clear both rather than sliding under them. */
+  :target,
+  [id] {
+    scroll-margin-top: calc(theme(spacing.nav) + theme(spacing.bar) + 1.5rem);
+  }
+
+  /* Thin, dark scrollbar so the void stays uninterrupted. */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #000; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.16); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--acid); }
+}
+
+@layer components {
+  /* ---------- 40px editorial grid ---------- */
+  .grid-field {
+    background-image:
+      linear-gradient(to right, var(--grid-stroke) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-stroke) 1px, transparent 1px);
+    background-size: var(--grid-cell) var(--grid-cell);
+  }
+
+  /* ---------- Film grain, fixed, 5% ---------- */
+  .grain-overlay {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 140px 140px;
+    opacity: 0.05;
+  }
+
+  /* ---------- Metadata label: the system's connective tissue ---------- */
+  .meta {
+    @apply font-ui text-meta font-medium uppercase tracking-meta;
+  }
+  .meta-lg {
+    @apply font-ui text-meta-lg font-medium uppercase tracking-meta;
+  }
+
+  /* ---------- Stroke display type (used sparingly) ---------- */
+  .text-stroke {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+    paint-order: stroke fill;
+  }
+  .text-stroke-thick {
+    color: transparent;
+    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.4);
+  }
+  .text-stroke-acid {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(223, 255, 0, 0.55);
+  }
+  /* Firefox has no text-stroke on some builds — fall back to low-opacity fill
+     so the headline is never invisible. */
+  @supports not (-webkit-text-stroke: 1px white) {
+    .text-stroke,
+    .text-stroke-thick { color: rgba(255, 255, 255, 0.4); }
+    .text-stroke-acid { color: rgba(223, 255, 0, 0.55); }
+  }
+
+  .blend-exclusion {
+    mix-blend-mode: exclusion;
+  }
+
+  /* ---------- Reveal wrapper (section 15) ---------- */
+  .reveal-mask {
+    overflow: hidden;
+  }
+  .reveal-mask > .reveal-inner {
+    transform: translateY(115%);
+    transition: transform 1400ms var(--ease-editorial);
+  }
+  .reveal-mask.in-view > .reveal-inner {
+    transform: translateY(0);
+  }
+  /* Fade variant for blocks that must not be clipped (grids, cards). */
+  .reveal-fade {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 1000ms var(--ease-editorial),
+      transform 1400ms var(--ease-editorial);
+  }
+  .reveal-fade.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+
+  /* ---------- Status bar acid rule: grows open on entrance ---------- */
+  .bar-rule {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1600ms var(--ease-editorial);
+    will-change: transform;
+  }
+  .bar-rule.in-view {
+    transform: scaleX(1);
+  }
+
+  /* ---------- Card deck stack offset ----------
+     The deck reserves 3 offsets of room on its right, so the deepest card
+     lands exactly on the container edge instead of escaping the viewport. */
+  .card-deck {
+    --swap-offset: 13px;
+  }
+  @media (min-width: 640px) {
+    .card-deck { --swap-offset: 20px; }
+  }
+  @media (min-width: 1024px) {
+    .card-deck { --swap-offset: 26px; }
+  }
+
+  /* ---------- Hairlines ---------- */
+  .hair-t { border-top: 1px solid rgba(255, 255, 255, 0.14); }
+  .hair-b { border-bottom: 1px solid rgba(255, 255, 255, 0.14); }
+  .hair-l { border-left: 1px solid rgba(255, 255, 255, 0.14); }
+  .hair-r { border-right: 1px solid rgba(255, 255, 255, 0.14); }
+
+  /* ---------- Underline interaction for nav ---------- */
+  .link-rule {
+    position: relative;
+  }
+  .link-rule::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    height: 1px;
+    width: 100%;
+    background: var(--acid);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 520ms var(--ease-editorial);
+  }
+  .link-rule:hover::after,
+  .link-rule:focus-visible::after,
+  .link-rule[data-active='true']::after {
+    transform: scaleX(1);
+  }
+}
+
+/* ============================================================
+   REDUCED MOTION — section 20
+   Kill scanlines, reveals, pulses and large movement outright.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html { scroll-behavior: auto; }
+
+  .scanline { display: none !important; }
+
+  /* Content must be visible without ever running the reveal. */
+  .reveal-mask > .reveal-inner { transform: none !important; }
+  .reveal-fade { opacity: 1 !important; transform: none !important; }
+  .bar-rule { transform: scaleX(1) !important; }
+}
