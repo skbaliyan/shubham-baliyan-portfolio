@@ -64,7 +64,9 @@ The build is a static SPA. Client-side routes need a catch-all rewrite so a deep
 - **Vercel** — `vercel.json` is included with the rewrite.
 - **Anything else** — serve `dist/` with normal static resolution (exact file → `dir/index.html`) and rewrite only unmatched paths to `/index.html`.
 
-Before going live, replace `https://shubhambaliyan.com` with the real domain in three places: `index.html` (canonical + Open Graph), `ORIGIN` in `src/hooks/useSeo.ts`, and `ORIGIN` in `scripts/prerender-meta.mjs`. Also update the `Sitemap:` line in `public/robots.txt`.
+The site URL is `https://shubham-baliyan.netlify.app`, set in four places: `index.html` (canonical, Open Graph, JSON-LD), `ORIGIN` in `src/hooks/useSeo.ts`, `ORIGIN` in `scripts/prerender-meta.mjs`, and the `Sitemap:` line in `public/robots.txt`. Moving to a custom domain means changing all four.
+
+Netlify builds with Node 22, pinned in `netlify.toml`. Local development still works on Node 18.
 
 ---
 
@@ -176,7 +178,6 @@ If you deploy somewhere without form handling, delete the form section from `src
 
 ## Known constraints
 
-- `github.com/shubhambaliyan` in `src/data/site.ts` is a **guess** — correct it if the handle differs.
 - The OG image is an SVG. Most platforms render it; if a specific one does not, export `public/og.svg` to a 1200×630 PNG and point the meta tags at it.
 - **The résumé is served as `.docx`**, copied from `Co_Work/`. No docx→PDF converter was available on this machine. To switch: drop a PDF in `public/` and change `resume.href` / `resume.format` in `src/data/site.ts`. Nothing else needs touching.
 - **The résumé contains a phone number.** Publishing it puts that number on a public URL that anyone can fetch. If that is not intended, use a PDF with contact details trimmed.

@@ -6,7 +6,7 @@ import { useEffect } from 'react'
    Case study routes get their own, derived from project data.
    ============================================================ */
 
-const ORIGIN = 'https://shubhambaliyan.com'
+const ORIGIN = 'https://shubham-baliyan.netlify.app'
 
 const setMeta = (selector: string, attr: 'name' | 'property', key: string, content: string) => {
   let el = document.head.querySelector<HTMLMetaElement>(selector)

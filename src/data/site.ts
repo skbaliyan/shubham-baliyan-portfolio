@@ -39,8 +39,8 @@ export const socials: SocialLink[] = [
   },
   {
     label: 'GitHub',
-    href: 'https://github.com/shubhambaliyan',
-    handle: '/shubhambaliyan',
+    href: 'https://github.com/skbaliyan',
+    handle: '/skbaliyan',
   },
 ]
 

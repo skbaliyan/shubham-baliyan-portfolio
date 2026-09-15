@@ -24,7 +24,7 @@ import { pathToFileURL } from 'node:url'
 
 const ROOT = process.cwd()
 const DIST = join(ROOT, 'dist')
-const ORIGIN = 'https://shubhambaliyan.com'
+const ORIGIN = 'https://shubham-baliyan.netlify.app'
 
 const escapeHtml = (s) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
