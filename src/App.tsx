@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { Navigation } from '@/components/Navigation'
 import { Footer } from '@/components/Footer'
+import { ChatWidget } from '@/components/ChatWidget'
 import { GrainOverlay } from '@/components/primitives'
 import Home from '@/pages/Home'
 
@@ -67,6 +68,7 @@ export default function App() {
       </main>
 
       <Footer />
+      <ChatWidget />
     </>
   )
 }
